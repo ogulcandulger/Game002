@@ -1,7 +1,7 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
-let x = canvas.width / 2;
-let y = canvas.height - 30; 
+let x = canvas.width / 6;
+let y = canvas.height-50; 
 let dx = 2;
 let dy = -2;
 let ballRadius = 10;
@@ -9,6 +9,7 @@ let color = "white";
 let paddleHeight = 75;
 let paddleWidth = 10;
 let paddleY = (canvas.height-paddleHeight) / 2;
+let oppPaddleY = (canvas.height-paddleHeight) / 2;
 let upPressed = false;
 let downPressed = false;
 
@@ -55,6 +56,14 @@ const dashedLine = () => {
     // ctx.fill();
 }
 
+function oppDrawPaddle() {
+    ctx.beginPath();
+    ctx.rect(canvas.width-11, oppPaddleY, paddleWidth, paddleHeight);
+    ctx.fillStyle = "white";
+    ctx.fill();
+    ctx.closePath();
+}
+
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(1, paddleY, paddleWidth, paddleHeight);
@@ -75,6 +84,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
+    oppDrawPaddle();
     dashedLine();
     x += dx;
     y += dy;
@@ -84,25 +94,39 @@ function draw() {
         ctx.fill();
     }
 
-    if(x + dx < ballRadius) {
+    if(x + dx > canvas.width-ballRadius) {
+        if(y > oppPaddleY && y < oppPaddleY + paddleHeight) {
         dx = -dx;
-    } else if(x + dx > canvas.height-ballRadius*2) {
+        } else {
+            alert("GAME OVER");
+            document.location.reload();
+            clearInterval(interval);
+        }
+    } else if(x + dx < ballRadius) {
         if(y > paddleY && y < paddleY + paddleHeight) {
             dx = -(dx*1.2);
         }
-        // else {
-        //     alert("GAME OVER");
-        //     document.location.reload();
-        //     clearInterval(interval);
-        // }
+        else {
+            alert("GAME OVER");
+            document.location.reload();
+            clearInterval(interval);
+        }
     }    
     
     if(downPressed && paddleY < canvas.height - paddleHeight) {
-        paddleY += 3;
+        paddleY += 5;
     }
     else if(upPressed && paddleY > 0) {
-        paddleY -= 3;
+        paddleY -= 5;
     }
+
+    if(y > (oppPaddleY + paddleHeight/2)  && oppPaddleY <canvas.height - paddleHeight) {
+        oppPaddleY +=2;
+    }
+    else if(y < (oppPaddleY + paddleHeight/2)  && oppPaddleY > 0) {
+        oppPaddleY -= 2;
+    }
+
 }
 
 
