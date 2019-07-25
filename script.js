@@ -1,11 +1,13 @@
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
+canvas.style.background = "black";
 let x = canvas.width / 6;
 let y = canvas.height-50; 
 let dx = 2;
 let dy = -2;
 let ballRadius = 10;
-let color = "white";
+//let backgroundColor = "black"
+let ballColor = "white";
 let paddleHeight = 75;
 let paddleWidth = 10;
 let paddleY = (canvas.height-paddleHeight) / 2;
@@ -75,7 +77,7 @@ function drawPaddle() {
 function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = color;
+    ctx.fillStyle = ballColor;
     ctx.fill();
     ctx.closePath();
 }
@@ -90,13 +92,14 @@ function draw() {
     y += dy;
     if(y + dy > (canvas.height-ballRadius) || y + dy < ballRadius) {
         dy = -dy;
-        color = getRandomColor();
+        ballColor = getRandomColor();
         ctx.fill();
     }
 
     if(x + dx > canvas.width-ballRadius) {
         if(y > oppPaddleY && y < oppPaddleY + paddleHeight) {
-        dx = -dx;
+        dx = -dx*1.1;
+        canvas.style.background = getRandomColor();
         } else {
             alert("GAME OVER");
             document.location.reload();
@@ -104,7 +107,8 @@ function draw() {
         }
     } else if(x + dx < ballRadius) {
         if(y > paddleY && y < paddleY + paddleHeight) {
-            dx = -(dx*1.2);
+            dx = -(dx*1.1);
+            canvas.style.background = getRandomColor();
         }
         else {
             alert("GAME OVER");
@@ -124,12 +128,9 @@ function draw() {
         oppPaddleY +=2;
     }
     else if(y < (oppPaddleY + paddleHeight/2)  && oppPaddleY > 0) {
-        oppPaddleY -= 2;
+        oppPaddleY -=2;
     }
 
 }
-
-
-
 
 let interval = setInterval(draw, 10);
